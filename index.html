@@ -1,0 +1,2003 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ALTUS – BRI</title>
+
+
+    <style>
+
+        /* =====================================================
+           RESET
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        :root {
+
+            --primary: #005658;
+            --primary-dark: #06474a;
+
+            --blue: #2878c7;
+            --blue-dark: #155b98;
+
+            --text: #0d2d4f;
+            --muted: #6c8297;
+
+            --safe: #43c89d;
+            --danger: #e85d67;
+
+            --bg: #edf3f7;
+            --surface: #ffffff;
+            --border: #e0e9ef;
+
+        }
+
+
+        html {
+            min-height: 100%;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #e8f0f6 0%,
+                    #f3f7fa 55%,
+                    #edf3f7 100%
+                );
+
+            color: var(--text);
+
+            -webkit-font-smoothing: antialiased;
+
+        }
+
+
+        button,
+        input {
+            font-family: inherit;
+        }
+
+
+        button {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+
+        /* =====================================================
+           APP
+        ===================================================== */
+
+        .app {
+
+            width: 100%;
+
+            max-width: 500px;
+
+            min-height: 100vh;
+
+            margin: 0 auto;
+
+            background: #ffffff;
+
+            overflow: hidden;
+
+            position: relative;
+
+        }
+
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .header {
+
+            padding:
+                22px
+                20px
+                24px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #dcecf9 0%,
+                    #edf6fc 60%,
+                    #ffffff 100%
+                );
+
+        }
+
+
+        .top-row {
+
+            width: 100%;
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                auto;
+
+            align-items: center;
+
+            gap: 14px;
+
+        }
+
+
+        /* =====================================================
+           PROFIL
+        ===================================================== */
+
+        .account {
+
+            min-width: 0;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+        }
+
+
+        .avatar {
+
+            width: 58px !important;
+            height: 58px !important;
+
+            min-width: 58px !important;
+            min-height: 58px !important;
+
+            max-width: 58px !important;
+            max-height: 58px !important;
+
+            flex: 0 0 58px !important;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50% !important;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #4d83b7,
+                    #376fa4
+                );
+
+            color: #ffffff;
+
+            font-size: 29px;
+
+            font-weight: 700;
+
+            line-height: 1;
+
+            box-shadow:
+                0 8px 18px
+                rgba(35,83,125,.16);
+
+        }
+
+
+        .account-info {
+
+            min-width: 0;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+        }
+
+
+        .account-name {
+
+            min-width: 0;
+
+            height: 28px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            white-space: nowrap;
+
+            cursor: pointer;
+
+        }
+
+
+        .account-name-text {
+
+            display: block;
+
+            font-size: 22px;
+
+            font-weight: 750;
+
+            line-height: 1;
+
+            color: var(--text);
+
+        }
+
+
+        .profile-chevron {
+
+            width: 19px;
+            height: 19px;
+
+            flex: 0 0 19px;
+
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            color: var(--text);
+
+            font-size: 21px;
+
+            font-weight: 500;
+
+            line-height: 14px;
+
+            transform:
+                translateY(-1px);
+
+        }
+
+
+        .bank-name {
+
+            margin-top: 7px;
+
+            font-size: 17px;
+
+            font-weight: 500;
+
+            line-height: 1;
+
+            color: #294b6b;
+
+        }
+
+
+        /* =====================================================
+           MONTH SELECTOR
+        ===================================================== */
+
+        .month-selector {
+
+            height: 64px;
+
+            min-width: 238px;
+
+            padding:
+                0 13px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.85);
+
+            border-radius: 18px;
+
+            background:
+                rgba(255,255,255,.94);
+
+            box-shadow:
+                0 8px 24px
+                rgba(45,85,120,.08);
+
+            color: var(--text);
+
+            cursor: pointer;
+
+            user-select: none;
+
+        }
+
+
+        .month-selector > span:not(.month-arrow) {
+
+            white-space: nowrap;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            line-height: 1;
+
+        }
+
+
+        .calendar {
+
+            position: relative;
+
+            width: 22px;
+            height: 22px;
+
+            flex: 0 0 22px;
+
+            border:
+                2px solid
+                var(--primary);
+
+            border-radius: 6px;
+
+        }
+
+
+        .calendar::before {
+
+            content: "";
+
+            position: absolute;
+
+            left: 3px;
+            right: 3px;
+
+            top: 6px;
+
+            height: 2px;
+
+            border-radius: 2px;
+
+            background:
+                var(--primary);
+
+        }
+
+
+        .calendar::after {
+
+            content: "";
+
+            position: absolute;
+
+            left: 5px;
+
+            top: -4px;
+
+            width: 3px;
+            height: 7px;
+
+            border-radius: 3px;
+
+            background:
+                var(--primary);
+
+            box-shadow:
+                9px 0 0
+                var(--primary);
+
+        }
+
+
+        .month-arrow {
+
+            width: 32px;
+            height: 32px;
+
+            flex: 0 0 32px;
+
+            margin-left: auto;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: #eff7f7;
+
+            color: var(--primary);
+
+            font-size: 20px;
+
+            line-height: 1;
+
+        }
+
+
+        /* =====================================================
+           CONTENT
+        ===================================================== */
+
+        .content {
+
+            padding:
+                0 20px
+                120px;
+
+        }
+
+
+        /* =====================================================
+           BUDGET CARD
+        ===================================================== */
+
+        .budget-card {
+
+            position: relative;
+
+            overflow: hidden;
+
+            padding:
+                24px 24px 22px;
+
+            border-radius: 24px;
+
+            color: #ffffff;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #2d80d1 0%,
+                    #216db5 56%,
+                    #155590 100%
+                );
+
+            box-shadow:
+                0 16px 30px
+                rgba(31,91,145,.22);
+
+        }
+
+
+        .budget-card::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 190px;
+            height: 190px;
+
+            right: -90px;
+            top: -100px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(255,255,255,.08);
+
+        }
+
+
+        .budget-title {
+
+            position: relative;
+
+            z-index: 1;
+
+            font-size: 15px;
+
+            font-weight: 500;
+
+            line-height: 1.2;
+
+            margin-bottom: 9px;
+
+        }
+
+
+        .budget-total {
+
+            position: relative;
+
+            z-index: 1;
+
+            font-size: 39px;
+
+            font-weight: 750;
+
+            letter-spacing: -1px;
+
+            line-height: 1.05;
+
+            white-space: nowrap;
+
+        }
+
+
+        .budget-progress {
+
+            position: relative;
+
+            z-index: 1;
+
+            height: 10px;
+
+            margin:
+                22px 0 23px;
+
+            overflow: hidden;
+
+            border-radius: 999px;
+
+            background:
+                rgba(255,255,255,.72);
+
+        }
+
+
+        .budget-progress-fill {
+
+            width: 0%;
+
+            height: 100%;
+
+            border-radius: inherit;
+
+            background:
+                #bde4ff;
+
+            transition:
+                width .45s ease;
+
+        }
+
+
+        /* =====================================================
+           SUMMARY
+        ===================================================== */
+
+        .summary {
+
+            position: relative;
+
+            z-index: 1;
+
+            display: grid;
+
+            grid-template-columns:
+                1fr
+                1.15fr
+                .9fr;
+
+            width: 100%;
+
+        }
+
+
+        .summary-item {
+
+            min-width: 0;
+
+        }
+
+
+        .summary-item + .summary-item {
+
+            border-left:
+                1px solid
+                rgba(255,255,255,.35);
+
+        }
+
+
+        .summary-item:nth-child(1) {
+
+            padding-right: 14px;
+
+        }
+
+
+        .summary-item:nth-child(2) {
+
+            padding:
+                0 14px;
+
+        }
+
+
+        .summary-item:nth-child(3) {
+
+            padding-left: 14px;
+
+        }
+
+
+        .summary-label {
+
+            margin-bottom: 6px;
+
+            font-size: 13px;
+
+            font-weight: 500;
+
+            line-height: 1.2;
+
+        }
+
+
+        .summary-value {
+
+            font-size: 17px;
+
+            font-weight: 750;
+
+            line-height: 1.2;
+
+            white-space: nowrap;
+
+        }
+
+
+        .summary-percent {
+
+            margin-top: 4px;
+
+            font-size: 12px;
+
+            font-weight: 500;
+
+            line-height: 1;
+
+            white-space: nowrap;
+
+        }
+
+
+        .safe {
+
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            min-height: 43px;
+
+            padding:
+                0 13px;
+
+            border-radius: 999px;
+
+            background:
+                var(--safe);
+
+            color: #ffffff;
+
+            font-size: 13px;
+
+            font-weight: 750;
+
+            white-space: nowrap;
+
+        }
+
+
+        /* =====================================================
+           EXPENSE HEADER
+        ===================================================== */
+
+        .section-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 10px;
+
+            margin:
+                28px 0 14px;
+
+        }
+
+
+        .section-title {
+
+            font-size: 23px;
+
+            font-weight: 750;
+
+            line-height: 1;
+
+            white-space: nowrap;
+
+        }
+
+
+        .view-all {
+
+            margin-left: 5px;
+
+            color: #1769c2;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+
+        }
+
+
+        /* =====================================================
+           EDIT ANGGARAN
+        ===================================================== */
+
+        .expense-header-actions {
+
+            margin-left: auto;
+
+            display: flex;
+
+            align-items: center;
+
+        }
+
+
+        .budget-manage-button {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 5px;
+
+            border: 0;
+
+            background: transparent;
+
+            color: var(--primary);
+
+            padding: 4px 0;
+
+            font-size: 12px;
+
+            font-weight: 750;
+
+            white-space: nowrap;
+
+            cursor: pointer;
+
+        }
+
+
+        .budget-edit-icon {
+
+            width: 15px;
+            height: 15px;
+
+            display: inline-flex;
+
+        }
+
+
+        .budget-edit-icon svg {
+
+            width: 100%;
+            height: 100%;
+
+        }
+
+
+        /* =====================================================
+           EXPENSE GRID
+        ===================================================== */
+
+        .expenses {
+
+            width: 100%;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 12px;
+
+        }
+
+
+        /* =====================================================
+           EXPENSE CARD
+        ===================================================== */
+
+        .card {
+
+            width: 100%;
+
+            min-width: 0;
+
+            min-height: 164px;
+
+            padding: 15px;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius: 19px;
+
+            background:
+                #ffffff;
+
+            box-shadow:
+                0 5px 15px
+                rgba(39,76,106,.035);
+
+            overflow: hidden;
+
+            cursor: pointer;
+
+            transition:
+                transform .15s ease,
+                box-shadow .15s ease;
+
+        }
+
+
+        .card:active {
+
+            transform:
+                scale(.985);
+
+        }
+
+
+        .card-top {
+
+            width: 100%;
+
+            min-width: 0;
+
+            display: flex;
+
+            align-items: flex-start;
+
+            gap: 10px;
+
+        }
+
+
+        /* =====================================================
+           ICON
+        ===================================================== */
+
+        .icon {
+
+            width: 55px;
+            height: 55px;
+
+            flex: 0 0 55px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 17px;
+
+        }
+
+
+        .icon svg {
+
+            width: 29px;
+            height: 29px;
+
+        }
+
+
+        .house-icon {
+
+            background: #ffeff1;
+            color: #ef4050;
+
+        }
+
+
+        .electric-icon {
+
+            background: #fff3cf;
+            color: #eda000;
+
+        }
+
+
+        .water-icon {
+
+            background: #e4f0ff;
+            color: #1976d2;
+
+        }
+
+
+        .gas-icon {
+
+            background: #fff0e9;
+            color: #f25b32;
+
+        }
+
+
+        .wifi-icon {
+
+            background: #ecebff;
+            color: #4c45b8;
+
+        }
+
+
+        .wash-icon {
+
+            background: #e5f7ef;
+            color: #1ca578;
+
+        }
+
+
+        .gallon-icon {
+
+            background: #e2f6fa;
+            color: #1497b4;
+
+        }
+
+
+        .fuel-icon {
+
+            background: #ffe9eb;
+            color: #df3944;
+
+        }
+
+
+        .card-info {
+
+            flex: 1;
+
+            min-width: 0;
+
+            padding-top: 2px;
+
+        }
+
+
+        .card-name {
+
+            max-width: 100%;
+
+            color: #0b2d52;
+
+            font-size: 16px;
+
+            font-weight: 750;
+
+            line-height: 1.18;
+
+            overflow-wrap: anywhere;
+
+        }
+
+
+        .card-amount {
+
+            margin-top: 7px;
+
+            color: #183d62;
+
+            font-size: 15px;
+
+            font-weight: 500;
+
+            line-height: 1.2;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+        }
+
+
+        .chevron {
+
+            flex: 0 0 auto;
+
+            margin-top: 15px;
+
+            color: #64819b;
+
+            font-size: 28px;
+
+            font-weight: 300;
+
+            line-height: 1;
+
+        }
+
+
+        /* =====================================================
+           CARD PROGRESS
+        ===================================================== */
+
+        .card-progress {
+
+            height: 7px;
+
+            margin-top: 15px;
+
+            overflow: hidden;
+
+            border-radius: 999px;
+
+            background:
+                #e6edf2;
+
+        }
+
+
+        .card-progress span {
+
+            display: block;
+
+            width: 0%;
+
+            height: 100%;
+
+            border-radius: inherit;
+
+            background:
+                #62a9df;
+
+            transition:
+                width .35s ease;
+
+        }
+
+
+        .card-remaining {
+
+            margin-top: 9px;
+
+            text-align: right;
+
+            color: #607b93;
+
+            font-size: 12px;
+
+            line-height: 1.2;
+
+            white-space: nowrap;
+
+        }
+
+
+        .card.fully-used .card-progress span {
+
+            background:
+                var(--safe);
+
+        }
+
+
+        /* =====================================================
+           BOTTOM SPACE
+        ===================================================== */
+
+        .tip {
+
+            margin-top: 20px;
+
+        }
+
+
+        /* =====================================================
+           PROFILE POPUP
+        ===================================================== */
+
+        .profile-selector-overlay {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 9998;
+
+            display: flex;
+
+            align-items: flex-end;
+
+            justify-content: center;
+
+            padding: 0;
+
+            background:
+                rgba(8,32,50,.38);
+
+            backdrop-filter:
+                blur(2px);
+
+        }
+
+
+        .profile-selector-sheet {
+
+            width: 100%;
+
+            max-width: 500px;
+
+            max-height: 75vh;
+
+            overflow-y: auto;
+
+            margin: 0 auto;
+
+            padding:
+                10px
+                16px
+                calc(
+                    18px +
+                    env(safe-area-inset-bottom)
+                );
+
+            border-radius:
+                24px 24px 0 0;
+
+            background:
+                #ffffff;
+
+            box-shadow:
+                0 -12px 35px
+                rgba(20,50,75,.16);
+
+        }
+
+
+        .sheet-title {
+
+            margin-bottom: 14px;
+
+            text-align: center;
+
+            color: var(--text);
+
+            font-size: 17px;
+
+            font-weight: 800;
+
+        }
+
+
+        .profile-options {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 8px;
+
+        }
+
+
+        .profile-option {
+
+            width: 100%;
+
+            min-height: 62px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            padding: 10px 11px;
+
+            border:
+                1px solid
+                #e1e9ee;
+
+            border-radius: 15px;
+
+            background: #ffffff;
+
+            text-align: left;
+
+            cursor: pointer;
+
+        }
+
+
+        .profile-option.active {
+
+            border-color:
+                var(--primary);
+
+            background:
+                #f0f8f8;
+
+            box-shadow:
+                inset 0 0 0 1px
+                rgba(0,86,88,.08);
+
+        }
+
+
+        .profile-avatar {
+
+            width: 39px;
+            height: 39px;
+
+            flex: 0 0 39px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background:
+                var(--primary);
+
+            color: #ffffff;
+
+            font-size: 16px;
+
+            font-weight: 800;
+
+        }
+
+
+        .profile-option-info {
+
+            flex: 1;
+
+            min-width: 0;
+
+        }
+
+
+        .profile-option-info strong {
+
+            display: block;
+
+            color: var(--text);
+
+            font-size: 14px;
+
+            line-height: 1.2;
+
+        }
+
+
+        .profile-option-info span {
+
+            display: block;
+
+            margin-top: 3px;
+
+            color: var(--muted);
+
+            font-size: 12px;
+
+        }
+
+
+        .profile-check {
+
+            width: 26px;
+            height: 26px;
+
+            flex: 0 0 26px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background:
+                var(--primary);
+
+            color: #ffffff;
+
+            font-size: 13px;
+
+            font-weight: 800;
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 620px) {
+
+            .app {
+                max-width: 100%;
+            }
+
+        }
+
+
+        @media (max-width: 430px) {
+
+            .header {
+
+                padding:
+                    18px
+                    14px
+                    21px;
+
+            }
+
+
+            .content {
+
+                padding:
+                    0 14px
+                    110px;
+
+            }
+
+
+            .top-row {
+
+                gap: 10px;
+
+            }
+
+
+            .avatar {
+
+                width: 54px !important;
+                height: 54px !important;
+
+                min-width: 54px !important;
+                min-height: 54px !important;
+
+                max-width: 54px !important;
+                max-height: 54px !important;
+
+                flex-basis: 54px !important;
+
+                font-size: 27px;
+
+            }
+
+
+            .account {
+
+                gap: 9px;
+
+            }
+
+
+            .account-name-text {
+
+                font-size: 20px;
+
+            }
+
+
+            .bank-name {
+
+                font-size: 16px;
+
+                margin-top: 6px;
+
+            }
+
+
+            .month-selector {
+
+                min-width: 0;
+
+                width: 190px;
+
+                height: 58px;
+
+                padding:
+                    0 10px;
+
+                gap: 7px;
+
+                border-radius: 16px;
+
+            }
+
+
+            .month-selector > span:not(.month-arrow) {
+
+                font-size: 14px;
+
+            }
+
+
+            .calendar {
+
+                width: 20px;
+                height: 20px;
+
+                flex-basis: 20px;
+
+            }
+
+
+            .month-arrow {
+
+                width: 29px;
+                height: 29px;
+
+                flex-basis: 29px;
+
+            }
+
+
+            .budget-card {
+
+                padding:
+                    21px
+                    20px
+                    20px;
+
+                border-radius: 21px;
+
+            }
+
+
+            .budget-total {
+
+                font-size: 34px;
+
+            }
+
+
+            .summary-value {
+
+                font-size: 15px;
+
+            }
+
+
+            .summary-percent {
+
+                font-size: 11px;
+
+            }
+
+
+            .summary-item:nth-child(1) {
+
+                padding-right: 10px;
+
+            }
+
+
+            .summary-item:nth-child(2) {
+
+                padding:
+                    0 10px;
+
+            }
+
+
+            .summary-item:nth-child(3) {
+
+                padding-left: 10px;
+
+            }
+
+
+            .safe {
+
+                padding:
+                    0 10px;
+
+                min-height: 39px;
+
+                font-size: 12px;
+
+            }
+
+
+            .section-header {
+
+                margin-top: 24px;
+
+                margin-bottom: 13px;
+
+            }
+
+
+            .section-title {
+
+                font-size: 21px;
+
+            }
+
+
+            .view-all {
+
+                font-size: 13px;
+
+            }
+
+
+            .budget-manage-button {
+
+                font-size: 10px;
+
+            }
+
+
+            .expenses {
+
+                gap: 10px;
+
+            }
+
+
+            .card {
+
+                min-height: 154px;
+
+                padding: 12px;
+
+                border-radius: 17px;
+
+            }
+
+
+            .card-top {
+
+                gap: 8px;
+
+            }
+
+
+            .icon {
+
+                width: 50px;
+                height: 50px;
+
+                flex-basis: 50px;
+
+                border-radius: 15px;
+
+            }
+
+
+            .icon svg {
+
+                width: 27px;
+                height: 27px;
+
+            }
+
+
+            .card-name {
+
+                font-size: 14px;
+
+            }
+
+
+            .card-amount {
+
+                margin-top: 6px;
+
+                font-size: 14px;
+
+            }
+
+
+            .chevron {
+
+                margin-top: 12px;
+
+                font-size: 25px;
+
+            }
+
+
+            .card-progress {
+
+                margin-top: 13px;
+
+            }
+
+
+            .card-remaining {
+
+                font-size: 11px;
+
+            }
+
+        }
+
+
+        @media (max-width: 360px) {
+
+            .top-row {
+
+                grid-template-columns:
+                    minmax(0, 1fr)
+                    174px;
+
+            }
+
+
+            .month-selector {
+
+                width: 174px;
+
+            }
+
+
+            .month-selector > span:not(.month-arrow) {
+
+                font-size: 13px;
+
+            }
+
+
+            .account-name-text {
+
+                font-size: 19px;
+
+            }
+
+
+            .avatar {
+
+                width: 50px !important;
+                height: 50px !important;
+
+                min-width: 50px !important;
+                min-height: 50px !important;
+
+                max-width: 50px !important;
+                max-height: 50px !important;
+
+                flex-basis: 50px !important;
+
+            }
+
+
+            .expenses {
+
+                gap: 8px;
+
+            }
+
+
+            .card {
+
+                padding: 10px;
+
+            }
+
+
+            .icon {
+
+                width: 46px;
+                height: 46px;
+
+                flex-basis: 46px;
+
+            }
+
+
+            .card-name {
+
+                font-size: 13px;
+
+            }
+
+
+            .card-amount {
+
+                font-size: 13px;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           DESKTOP
+        ===================================================== */
+
+        @media (min-width: 600px) {
+
+            body {
+
+                padding:
+                    24px 0;
+
+            }
+
+
+            .app {
+
+                min-height:
+                    calc(100vh - 48px);
+
+                border-radius:
+                    30px;
+
+                box-shadow:
+                    0 18px 50px
+                    rgba(25,55,80,.14);
+
+            }
+
+        }
+
+.app-copyright {
+    text-align: center;
+    padding: 18px 12px 24px;
+    color: #8a98a3;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+    <!-- =================================================
+         HEADER
+    ================================================== -->
+
+    <header class="header">
+
+        <div class="top-row">
+
+
+            <!-- PROFIL -->
+
+            <div class="account">
+
+                <div class="avatar">
+                    A
+                </div>
+
+
+                <div class="account-info">
+
+                    <div class="account-name">
+
+                        ALTUS
+
+                        <span class="profile-chevron">
+                            ⌄
+                        </span>
+
+                    </div>
+
+
+                    <div class="bank-name">
+                        BRI
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- BULAN -->
+
+            <div class="month-selector">
+
+                <div class="calendar"></div>
+
+
+                <span>
+                    September 2026
+                </span>
+
+
+                <span class="month-arrow">
+                    ⌄
+                </span>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =================================================
+         CONTENT
+    ================================================== -->
+
+    <main class="content">
+
+
+        <!-- =================================================
+             BUDGET
+        ================================================== -->
+
+        <section class="budget-card">
+
+
+            <div class="budget-title">
+                Total Anggaran Bulan Ini
+            </div>
+
+
+            <div class="budget-total">
+                Rp 2.945.000
+            </div>
+
+
+            <div class="budget-progress">
+
+                <div class="budget-progress-fill"></div>
+
+            </div>
+
+
+            <div class="summary">
+
+
+                <!-- TERPAKAI -->
+
+                <div class="summary-item">
+
+                    <div class="summary-label">
+                        Terpakai
+                    </div>
+
+
+                    <div class="summary-value">
+                        Rp 0
+                    </div>
+
+
+                    <div class="summary-percent">
+                        (0%)
+                    </div>
+
+                </div>
+
+
+                <!-- SISA -->
+
+                <div class="summary-item">
+
+                    <div class="summary-label">
+                        Sisa
+                    </div>
+
+
+                    <div class="summary-value">
+                        Rp 2.945.000
+                    </div>
+
+
+                    <div class="summary-percent">
+                        (100%)
+                    </div>
+
+                </div>
+
+
+                <!-- STATUS -->
+
+                <div class="summary-item">
+
+                    <div class="summary-label">
+                        Status
+                    </div>
+
+
+                    <div class="safe">
+                        ✓ Aman
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             PENGELUARAN
+        ================================================== -->
+
+        <div class="section-header">
+
+            <div
+                class="section-title"
+            >
+                Pengeluaran
+            </div>
+
+
+            <div class="view-all">
+                Lihat Semua&nbsp; ›
+            </div>
+
+        </div>
+
+
+        <!-- KARTU AKAN DIISI OTOMATIS OLEH app.js -->
+
+        <section class="expenses"></section>
+
+
+    </main>
+
+
+</div>
+
+
+<script src="app.js"></script>
+
+<footer class="app-copyright">
+    © 2026 Altus Torahunchi. All rights reserved.
+</footer>
+
+</body>
+
+</html>

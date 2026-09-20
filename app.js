@@ -10136,19 +10136,45 @@ function initializeApp() {
 // JALANKAN SAAT DOM SELESAI
 // ======================================================
 
+// ======================================================
+// JALANKAN APLIKASI SETELAH PIN BENAR
+// ======================================================
+
 if (
-    document.readyState ===
-    "loading"
+    document.readyState === "loading"
 ) {
 
     document.addEventListener(
         "DOMContentLoaded",
-        initializeApp
+        function () {
+
+            // Jangan buka aplikasi sebelum PIN benar
+            const lock =
+                document.getElementById("pin-lock");
+
+            if (lock) {
+                lock.style.display = "flex";
+            }
+
+            document.body.classList.add(
+                "pin-locked"
+            );
+
+        }
     );
 
 } else {
 
-    initializeApp();
+    const lock =
+        document.getElementById("pin-lock");
+
+    if (lock) {
+        lock.style.display = "flex";
+    }
+
+    document.body.classList.add(
+        "pin-locked"
+    );
 
 }
 
@@ -12995,136 +13021,7 @@ function addNewAppDesign() {
 
 }
 
-// ======================================================
-// SUPABASE CLOUD SYNC - ALTUS BRI
-// ======================================================
-
-(function () {
-
-    // Pastikan Supabase tersedia
-    if (
-        typeof supabase === "undefined" ||
-        typeof window.supabaseClient === "undefined"
-    ) {
-        console.warn("Supabase client belum dikonfigurasi.");
-    }
-
-    // --------------------------------------------------
-    // PIN LOCK
-    // --------------------------------------------------
-
-    const APP_PIN = "124574";
-
-    window.unlockApp = async function () {
-
-        const input =
-            document.getElementById("app-pin");
-
-        const error =
-            document.getElementById("pin-error");
-
-        if (!input) return;
-
-        const pin =
-            input.value.trim();
-
-        if (pin === APP_PIN) {
-
-            if (error) {
-                error.textContent = "";
-            }
-
-            const lock =
-                document.getElementById("pin-lock");
-
-            if (lock) {
-                lock.style.display = "none";
-            }
-
-            document.body.classList.add(
-                "app-unlocked"
-            );
-
-            return;
-        }
-
-        if (error) {
-            error.textContent =
-                "PIN salah. Silakan coba lagi.";
-        }
-
-        input.value = "";
-        input.focus();
-    };
-
-
-    // --------------------------------------------------
-    // ENTER = MASUK
-    // --------------------------------------------------
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        function () {
-
-            const input =
-                document.getElementById("app-pin");
-
-            if (!input) return;
-
-            input.addEventListener(
-                "keydown",
-                function (event) {
-
-                    if (event.key === "Enter") {
-
-                        event.preventDefault();
-
-                        window.unlockApp();
-
-                    }
-
-                }
-            );
-
-        }
-    );
-
-
-    // --------------------------------------------------
-    // LOGOUT / KUNCI LAGI
-    // --------------------------------------------------
-
-    window.lockApp = function () {
-
-        const lock =
-            document.getElementById("pin-lock");
-
-        const input =
-            document.getElementById("app-pin");
-
-        const error =
-            document.getElementById("pin-error");
-
-        if (lock) {
-            lock.style.display = "flex";
-        }
-
-        if (input) {
-            input.value = "";
-            input.focus();
-        }
-
-        if (error) {
-            error.textContent = "";
-        }
-
-        document.body.classList.remove(
-            "app-unlocked"
-        );
-
-    };
-
-})();
+    
 
 // ======================================================
 // ALTUS – BRI
@@ -13370,7 +13267,8 @@ function addNewAppDesign() {
             document.body.classList.add(
                 "app-unlocked"
             );
-
+            
+            initializeApp();    
 
             // Refresh tampilan
             if (
@@ -13703,90 +13601,4 @@ function addNewAppDesign() {
 
 })();
 
-})();
 
-// ======================================================
-// FINAL PIN LOCK - ALTUS BRI
-// ======================================================
-
-(function () {
-
-    function forcePinLock() {
-
-        const lock =
-            document.getElementById("pin-lock");
-
-        if (!lock) {
-            return;
-        }
-
-        lock.style.setProperty(
-            "display",
-            "flex",
-            "important"
-        );
-
-        lock.style.setProperty(
-            "position",
-            "fixed",
-            "important"
-        );
-
-        lock.style.setProperty(
-            "inset",
-            "0",
-            "important"
-        );
-
-        lock.style.setProperty(
-            "z-index",
-            "9999999",
-            "important"
-        );
-
-        lock.style.setProperty(
-            "visibility",
-            "visible",
-            "important"
-        );
-
-        lock.style.setProperty(
-            "opacity",
-            "1",
-            "important"
-        );
-
-        document.body.style.overflow = "hidden";
-
-    }
-
-
-    // Jalankan langsung
-    forcePinLock();
-
-
-    // Jalankan lagi setelah DOM siap
-    document.addEventListener(
-        "DOMContentLoaded",
-        forcePinLock
-    );
-
-
-    // Jaga kalau aplikasi melakukan render ulang
-    setTimeout(
-        forcePinLock,
-        100
-    );
-
-    setTimeout(
-        forcePinLock,
-        500
-    );
-
-    setTimeout(
-        forcePinLock,
-        1000
-    );
-
-
-})();

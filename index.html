@@ -1790,11 +1790,200 @@
 
     </style>
 
+<style>
+/* ==================================================
+   PIN LOCK ALTUS – BRI
+================================================== */
+
+#pin-lock {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #f5f9f9;
+
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.pin-box {
+    width: 100%;
+    max-width: 360px;
+
+    background: #ffffff;
+
+    border-radius: 24px;
+
+    padding: 32px 24px;
+
+    text-align: center;
+
+    box-sizing: border-box;
+
+    box-shadow:
+        0 15px 45px rgba(0, 86, 88, .12);
+}
+
+.pin-logo {
+    width: 64px;
+    height: 64px;
+
+    margin: 0 auto 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 20px;
+
+    background: #005658;
+    color: #ffffff;
+
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.pin-title {
+    color: #005658;
+
+    font-size: 24px;
+    font-weight: 800;
+
+    margin-bottom: 6px;
+}
+
+.pin-subtitle {
+    color: #7a8a96;
+
+    font-size: 13px;
+
+    margin-bottom: 22px;
+}
+
+#app-pin {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    height: 54px;
+
+    border: 1px solid #dce8e8;
+
+    border-radius: 14px;
+
+    background: #f8fbfb;
+
+    text-align: center;
+
+    font-size: 22px;
+
+    letter-spacing: 7px;
+
+    outline: none;
+}
+
+#app-pin:focus {
+    border-color: #005658;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 3px rgba(0, 86, 88, .08);
+}
+
+#pin-button {
+    width: 100%;
+
+    height: 52px;
+
+    margin-top: 14px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    background: #005658;
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+#pin-button:active {
+    transform: scale(.98);
+}
+
+.pin-error {
+    min-height: 20px;
+
+    margin-top: 12px;
+
+    color: #e55353;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+</style>
+
 </head>
 
 
 <body>
 
+    <!-- ==================================================
+     PIN LOCK ALTUS – BRI
+================================================== -->
+
+<div id="pin-lock">
+
+    <div class="pin-box">
+
+        <div class="pin-logo">
+            A
+        </div>
+
+        <div class="pin-title">
+            ALTUS – BRI
+        </div>
+
+        <div class="pin-subtitle">
+            Masukkan PIN untuk masuk
+        </div>
+
+        <input
+            type="password"
+            id="app-pin"
+            inputmode="numeric"
+            maxlength="6"
+            autocomplete="off"
+            placeholder="••••••"
+        >
+
+        <button
+            type="button"
+            id="pin-button"
+            onclick="unlockApp()"
+        >
+            MASUK
+        </button>
+
+        <div
+            id="pin-error"
+            class="pin-error"
+        ></div>
+
+    </div>
+
+</div>
 
 <div class="app">
 
@@ -1991,8 +2180,38 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<div id="pin-lock">
+    <div class="pin-box">
+        <div class="pin-logo">A</div>
+        <div class="pin-title">ALTUS – BRI</div>
+        <div class="pin-subtitle">Masukkan PIN untuk masuk</div>
+
+        <input
+            type="password"
+            id="app-pin"
+            inputmode="numeric"
+            maxlength="6"
+            autocomplete="off"
+            placeholder="••••••"
+        >
+
+        <button
+            type="button"
+            id="pin-button"
+            onclick="unlockApp()"
+        >
+            MASUK
+        </button>
+
+        <div id="pin-error" class="pin-error"></div>
+    </div>
+</div>
 
 <script src="app.js"></script>
+
 
 <footer class="app-copyright">
     © 2026 Altus Torahunchi. All rights reserved.

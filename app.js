@@ -1,5 +1,270 @@
 // ======================================================
 // ALTUS – BRI
+// PIN LOGIN + SUPABASE
+// ======================================================
+
+const SUPABASE_URL =
+    "https://imvevftuhiiewkhcdnsb.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_QDtcoBds58KKgwlf-Ug7Jg_Qb8cWALG";
+
+const cloud =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+window.altusSupabase = cloud;
+
+
+// ======================================================
+// KUNCI APLIKASI SAAT DIBUKA
+// ======================================================
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const lock =
+        document.getElementById("pin-lock");
+
+    if (lock) {
+        lock.style.display = "flex";
+        lock.style.zIndex = "999999";
+    }
+
+    document.body.classList.add("pin-locked");
+
+});
+
+
+// ======================================================
+// LOGIN DENGAN PIN
+// ======================================================
+
+window.unlockApp = async function () {
+
+    const input =
+        document.getElementById("app-pin");
+
+    const errorBox =
+        document.getElementById("pin-error");
+
+    const button =
+        document.getElementById("pin-button");
+
+    const pin =
+        input ? input.value.trim() : "";
+
+    if (!pin) {
+        errorBox.textContent =
+            "Masukkan PIN terlebih dahulu.";
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = "MEMERIKSA...";
+
+    try {
+
+        const result =
+            await cloud.functions.invoke(
+                "app-login",
+                {
+                    body: {
+                        pin: pin
+                    }
+                }
+            );
+
+        const data =
+            result.data;
+
+        const error =
+            result.error;
+
+        if (error) {
+            throw error;
+        }
+
+        if (
+            !data ||
+            !data.success ||
+            !data.access_token ||
+            !data.refresh_token
+        ) {
+            throw new Error(
+                "Login gagal"
+            );
+        }
+
+
+        // Pasang session Supabase
+        const sessionResult =
+            await cloud.auth.setSession({
+
+                access_token:
+                    data.access_token,
+
+                refresh_token:
+                    data.refresh_token
+
+            });
+
+
+        if (sessionResult.error) {
+            throw sessionResult.error;
+        }
+
+
+        // ==================================================
+        // AMBIL DATA CLOUD
+        // ==================================================
+
+        const userResult =
+            await cloud.auth.getUser();
+
+        if (userResult.error) {
+            throw userResult.error;
+        }
+
+        const user =
+            userResult.data.user;
+
+
+        const stateResult =
+            await cloud
+                .from("app_state")
+                .select("*")
+                .eq("user_id", user.id)
+                .maybeSingle();
+
+
+        if (stateResult.error) {
+            throw stateResult.error;
+        }
+
+
+        // ==================================================
+        // JIKA ADA DATA CLOUD
+        // ==================================================
+
+        if (
+            stateResult.data &&
+            stateResult.data.profile_data
+        ) {
+
+            localStorage.setItem(
+                "profiles",
+                JSON.stringify(
+                    stateResult.data.profile_data
+                )
+            );
+
+
+            if (
+                stateResult.data.current_profile
+            ) {
+
+                localStorage.setItem(
+                    "currentProfile",
+                    stateResult.data.current_profile
+                );
+
+            }
+
+
+            if (
+                stateResult.data.current_month
+            ) {
+
+                localStorage.setItem(
+                    "currentMonth",
+                    stateResult.data.current_month
+                );
+
+            }
+
+        }
+
+
+        // ==================================================
+        // BUKA APLIKASI
+        // ==================================================
+
+        const lock =
+            document.getElementById("pin-lock");
+
+        if (lock) {
+            lock.style.display = "none";
+        }
+
+        document.body.classList.remove(
+            "pin-locked"
+        );
+
+
+        // Jalankan aplikasi
+        if (
+            typeof initializeApp ===
+            "function"
+        ) {
+            initializeApp();
+        }
+
+
+        if (
+            typeof loadProfiles ===
+            "function"
+        ) {
+            loadProfiles();
+        }
+
+
+        if (
+            typeof updateProfileHeader ===
+            "function"
+        ) {
+            updateProfileHeader();
+        }
+
+
+        if (
+            typeof renderExpenseCards ===
+            "function"
+        ) {
+            renderExpenseCards();
+        }
+
+
+        if (
+            typeof updateDashboard ===
+            "function"
+        ) {
+            updateDashboard();
+        }
+
+
+    } catch (err) {
+
+        console.error(
+            "LOGIN PIN ERROR:",
+            err
+        );
+
+        errorBox.textContent =
+            "PIN salah atau koneksi database bermasalah.";
+
+    } finally {
+
+        button.disabled = false;
+        button.textContent = "MASUK";
+
+    }
+
+};
+
+// ======================================================
+// ALTUS – BRI
 // FULL APP.JS
 // MULTI PROFILE + BUDGET + ELECTRICITY SYSTEM
 // ======================================================

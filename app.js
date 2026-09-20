@@ -12995,4 +12995,695 @@ function addNewAppDesign() {
 
 }
 
+// ======================================================
+// SUPABASE CLOUD SYNC - ALTUS BRI
+// ======================================================
+
+(function () {
+
+    // Pastikan Supabase tersedia
+    if (
+        typeof supabase === "undefined" ||
+        typeof window.supabaseClient === "undefined"
+    ) {
+        console.warn("Supabase client belum dikonfigurasi.");
+    }
+
+    // --------------------------------------------------
+    // PIN LOCK
+    // --------------------------------------------------
+
+    const APP_PIN = "124574";
+
+    window.unlockApp = async function () {
+
+        const input =
+            document.getElementById("app-pin");
+
+        const error =
+            document.getElementById("pin-error");
+
+        if (!input) return;
+
+        const pin =
+            input.value.trim();
+
+        if (pin === APP_PIN) {
+
+            if (error) {
+                error.textContent = "";
+            }
+
+            const lock =
+                document.getElementById("pin-lock");
+
+            if (lock) {
+                lock.style.display = "none";
+            }
+
+            document.body.classList.add(
+                "app-unlocked"
+            );
+
+            return;
+        }
+
+        if (error) {
+            error.textContent =
+                "PIN salah. Silakan coba lagi.";
+        }
+
+        input.value = "";
+        input.focus();
+    };
+
+
+    // --------------------------------------------------
+    // ENTER = MASUK
+    // --------------------------------------------------
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            const input =
+                document.getElementById("app-pin");
+
+            if (!input) return;
+
+            input.addEventListener(
+                "keydown",
+                function (event) {
+
+                    if (event.key === "Enter") {
+
+                        event.preventDefault();
+
+                        window.unlockApp();
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    // --------------------------------------------------
+    // LOGOUT / KUNCI LAGI
+    // --------------------------------------------------
+
+    window.lockApp = function () {
+
+        const lock =
+            document.getElementById("pin-lock");
+
+        const input =
+            document.getElementById("app-pin");
+
+        const error =
+            document.getElementById("pin-error");
+
+        if (lock) {
+            lock.style.display = "flex";
+        }
+
+        if (input) {
+            input.value = "";
+            input.focus();
+        }
+
+        if (error) {
+            error.textContent = "";
+        }
+
+        document.body.classList.remove(
+            "app-unlocked"
+        );
+
+    };
+
+})();
+
+// ======================================================
+// ALTUS – BRI
+// SUPABASE CLOUD DATABASE
+// ======================================================
+
+(function () {
+
+    const SUPABASE_URL =
+        "https://imvevftuhiiewkhcdnsb.supabase.co";
+
+    const SUPABASE_KEY =
+        "sb_publishable_QDtcoBds58KKgwlf-Ug7Jg_Qb8cWALG";
+
+    // Buat client Supabase
+    const cloud =
+        window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+
+    window.altusSupabase = cloud;
+
+    let cloudReady = false;
+    let cloudSyncTimer = null;
+    let loadingCloudData = false;
+
+
+    // ==================================================
+    // LOGIN MELALUI PIN
+    // ==================================================
+
+    window.unlockApp = async function () {
+
+        const input =
+            document.getElementById("app-pin");
+
+        const error =
+            document.getElementById("pin-error");
+
+        const button =
+            document.getElementById("pin-button");
+
+        if (!input) return;
+
+        const pin =
+            input.value.trim();
+
+        if (!pin) {
+
+            if (error) {
+                error.textContent =
+                    "Masukkan PIN terlebih dahulu.";
+            }
+
+            return;
+        }
+
+        if (button) {
+            button.disabled = true;
+            button.textContent = "MEMBUKA...";
+        }
+
+        if (error) {
+            error.textContent = "";
+        }
+
+        try {
+
+            // ------------------------------------------
+            // LOGIN KE EDGE FUNCTION
+            // ------------------------------------------
+
+            const result =
+                await cloud.functions.invoke(
+                    "app-login",
+                    {
+                        body: {
+                            pin: pin
+                        }
+                    }
+                );
+
+            if (result.error) {
+                throw result.error;
+            }
+
+            const data =
+                result.data;
+
+            if (
+                !data ||
+                !data.success ||
+                !data.access_token ||
+                !data.refresh_token
+            ) {
+
+                throw new Error(
+                    data?.error ||
+                    "Login gagal."
+                );
+
+            }
+
+
+            // ------------------------------------------
+            // PASANG SESSION SUPABASE
+            // ------------------------------------------
+
+            const sessionResult =
+                await cloud.auth.setSession({
+
+                    access_token:
+                        data.access_token,
+
+                    refresh_token:
+                        data.refresh_token
+
+                });
+
+
+            if (sessionResult.error) {
+                throw sessionResult.error;
+            }
+
+
+            // ------------------------------------------
+            // AMBIL DATA CLOUD
+            // ------------------------------------------
+
+            loadingCloudData = true;
+
+            const {
+                data: cloudState,
+                error: cloudError
+            } = await cloud
+                .from("app_state")
+                .select(
+                    "user_id, profile_data, current_profile, current_month"
+                )
+                .maybeSingle();
+
+
+            if (cloudError) {
+                throw cloudError;
+            }
+
+
+            // ------------------------------------------
+            // KALAU CLOUD SUDAH ADA DATA
+            // ------------------------------------------
+
+            if (cloudState) {
+
+                if (
+                    cloudState.profile_data &&
+                    typeof cloudState.profile_data === "object"
+                ) {
+
+                    localStorage.setItem(
+                        "altus_bri_profiles",
+                        JSON.stringify(
+                            cloudState.profile_data
+                        )
+                    );
+
+                }
+
+
+                if (
+                    cloudState.current_profile
+                ) {
+
+                    localStorage.setItem(
+                        "altus_current_profile",
+                        cloudState.current_profile
+                    );
+
+                }
+
+
+                if (
+                    cloudState.current_month
+                ) {
+
+                    localStorage.setItem(
+                        "altus_bri_current_month",
+                        cloudState.current_month
+                    );
+
+                }
+
+
+                // Ambil data cloud ke aplikasi
+                loadProfiles();
+
+            }
+
+            // ------------------------------------------
+            // KALAU CLOUD MASIH KOSONG
+            // ------------------------------------------
+
+            else {
+
+                await saveCloudState();
+
+            }
+
+
+            loadingCloudData = false;
+
+            cloudReady = true;
+
+
+            // ------------------------------------------
+            // TAMPILKAN APLIKASI
+            // ------------------------------------------
+
+            const lock =
+                document.getElementById("pin-lock");
+
+            if (lock) {
+                lock.style.display = "none";
+            }
+
+            document.body.classList.add(
+                "app-unlocked"
+            );
+
+
+            // Refresh tampilan
+            if (
+                typeof updateProfileHeader ===
+                "function"
+            ) {
+                updateProfileHeader();
+            }
+
+            if (
+                typeof renderExpenseCards ===
+                "function"
+            ) {
+                renderExpenseCards();
+            }
+
+            if (
+                typeof updateDashboard ===
+                "function"
+            ) {
+                updateDashboard();
+            }
+
+
+            input.value = "";
+
+
+        } catch (err) {
+
+            console.error(
+                "ALTUS CLOUD LOGIN ERROR:",
+                err
+            );
+
+            loadingCloudData = false;
+            cloudReady = false;
+
+            if (error) {
+
+                error.textContent =
+                    "PIN salah atau koneksi database bermasalah.";
+
+            }
+
+            input.value = "";
+
+        } finally {
+
+            if (button) {
+
+                button.disabled = false;
+                button.textContent = "MASUK";
+
+            }
+
+        }
+
+    };
+
+
+    // ==================================================
+    // SIMPAN DATA KE SUPABASE
+    // ==================================================
+
+    async function saveCloudState() {
+
+        if (!cloudReady && !loadingCloudData) {
+            return;
+        }
+
+        try {
+
+            const {
+                data: {
+                    user
+                }
+            } = await cloud.auth.getUser();
+
+            if (!user) {
+                return;
+            }
+
+
+            const savedProfiles =
+                localStorage.getItem(
+                    "altus_bri_profiles"
+                );
+
+            const savedProfile =
+                localStorage.getItem(
+                    "altus_current_profile"
+                );
+
+            const savedMonth =
+                localStorage.getItem(
+                    "altus_bri_current_month"
+                );
+
+
+            let profileData = {};
+
+            if (savedProfiles) {
+
+                try {
+
+                    profileData =
+                        JSON.parse(
+                            savedProfiles
+                        );
+
+                } catch (e) {
+
+                    console.error(
+                        "Data profile tidak valid."
+                    );
+
+                    return;
+
+                }
+
+            }
+
+
+            const { error } =
+                await cloud
+                    .from("app_state")
+                    .upsert(
+                        {
+                            user_id:
+                                user.id,
+
+                            profile_data:
+                                profileData,
+
+                            current_profile:
+                                savedProfile ||
+                                "ALTUS-BRI",
+
+                            current_month:
+                                savedMonth ||
+                                "2026-09",
+
+                            updated_at:
+                                new Date().toISOString()
+                        },
+                        {
+                            onConflict:
+                                "user_id"
+                        }
+                    );
+
+
+            if (error) {
+                throw error;
+            }
+
+
+            console.log(
+                "☁️ Data ALTUS berhasil disimpan ke cloud."
+            );
+
+
+        } catch (err) {
+
+            console.error(
+                "Gagal menyimpan ke cloud:",
+                err
+            );
+
+        }
+
+    }
+
+
+    // ==================================================
+    // OTOMATIS SYNC SETELAH DATA BERUBAH
+    // ==================================================
+
+    const originalSetItem =
+        Storage.prototype.setItem;
+
+
+    Storage.prototype.setItem =
+        function (key, value) {
+
+            originalSetItem.call(
+                this,
+                key,
+                value
+            );
+
+
+            if (
+                this !== localStorage
+            ) {
+                return;
+            }
+
+
+            if (
+                !cloudReady ||
+                loadingCloudData
+            ) {
+                return;
+            }
+
+
+            if (
+                key ===
+                    "altus_bri_profiles" ||
+
+                key ===
+                    "altus_current_profile" ||
+
+                key ===
+                    "altus_bri_current_month"
+            ) {
+
+                clearTimeout(
+                    cloudSyncTimer
+                );
+
+
+                cloudSyncTimer =
+                    setTimeout(
+                        function () {
+
+                            saveCloudState();
+
+                        },
+                        800
+                    );
+
+            }
+
+        };
+
+
+    // ==================================================
+    // ENTER = LOGIN
+    // ==================================================
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            const input =
+                document.getElementById(
+                    "app-pin"
+                );
+
+            if (!input) {
+                return;
+            }
+
+            input.addEventListener(
+                "keydown",
+                function (event) {
+
+                    if (
+                        event.key ===
+                        "Enter"
+                    ) {
+
+                        event.preventDefault();
+
+                        window.unlockApp();
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    // ==================================================
+    // KUNCI KEMBALI
+    // ==================================================
+
+    window.lockApp =
+        function () {
+
+            cloudReady = false;
+
+            const lock =
+                document.getElementById(
+                    "pin-lock"
+                );
+
+            const input =
+                document.getElementById(
+                    "app-pin"
+                );
+
+            const error =
+                document.getElementById(
+                    "pin-error"
+                );
+
+
+            if (lock) {
+                lock.style.display =
+                    "flex";
+            }
+
+
+            if (input) {
+                input.value = "";
+                input.focus();
+            }
+
+
+            if (error) {
+                error.textContent = "";
+            }
+
+
+            document.body.classList.remove(
+                "app-unlocked"
+            );
+
+        };
+
+
+    console.log(
+        "☁️ ALTUS – BRI Cloud Database siap."
+    );
+
+})();
+
 })();

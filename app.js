@@ -13133,6 +13133,23 @@ function addNewAppDesign() {
 
 (function () {
 
+        // ==========================================
+    // PAKSA PIN LOCK SAAT APLIKASI DIBUKA
+    // ==========================================
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const lock = document.getElementById("pin-lock");
+
+        if (lock) {
+            lock.style.display = "flex";
+            lock.style.zIndex = "999999";
+        }
+
+        document.body.classList.remove("app-unlocked");
+
+    });
+    
     const SUPABASE_URL =
         "https://imvevftuhiiewkhcdnsb.supabase.co";
 

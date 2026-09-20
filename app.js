@@ -13149,7 +13149,7 @@ function addNewAppDesign() {
         document.body.classList.remove("app-unlocked");
 
     });
-    
+
     const SUPABASE_URL =
         "https://imvevftuhiiewkhcdnsb.supabase.co";
 
@@ -13702,5 +13702,91 @@ function addNewAppDesign() {
     );
 
 })();
+
+})();
+
+// ======================================================
+// FINAL PIN LOCK - ALTUS BRI
+// ======================================================
+
+(function () {
+
+    function forcePinLock() {
+
+        const lock =
+            document.getElementById("pin-lock");
+
+        if (!lock) {
+            return;
+        }
+
+        lock.style.setProperty(
+            "display",
+            "flex",
+            "important"
+        );
+
+        lock.style.setProperty(
+            "position",
+            "fixed",
+            "important"
+        );
+
+        lock.style.setProperty(
+            "inset",
+            "0",
+            "important"
+        );
+
+        lock.style.setProperty(
+            "z-index",
+            "9999999",
+            "important"
+        );
+
+        lock.style.setProperty(
+            "visibility",
+            "visible",
+            "important"
+        );
+
+        lock.style.setProperty(
+            "opacity",
+            "1",
+            "important"
+        );
+
+        document.body.style.overflow = "hidden";
+
+    }
+
+
+    // Jalankan langsung
+    forcePinLock();
+
+
+    // Jalankan lagi setelah DOM siap
+    document.addEventListener(
+        "DOMContentLoaded",
+        forcePinLock
+    );
+
+
+    // Jaga kalau aplikasi melakukan render ulang
+    setTimeout(
+        forcePinLock,
+        100
+    );
+
+    setTimeout(
+        forcePinLock,
+        500
+    );
+
+    setTimeout(
+        forcePinLock,
+        1000
+    );
+
 
 })();

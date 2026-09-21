@@ -1997,6 +1997,30 @@
 </div>
 
 
+<!-- =====================================================
+     FIREBASE
+===================================================== -->
+
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyDhb2McXiFo8asNwS0_okNQeOIibW3D7EQ",
+        authDomain: "altkeu.firebaseapp.com",
+        projectId: "altkeu",
+        storageBucket: "altkeu.firebasestorage.app",
+        messagingSenderId: "577565591875",
+        appId: "1:577565591875:web:a2cc10514e5524a5bd87f6"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    const firebaseAuth = firebase.auth();
+    const firebaseDB = firebase.firestore();
+</script>
+
 <script src="app.js"></script>
 
 <footer class="app-copyright">

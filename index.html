@@ -2328,7 +2328,7 @@ loginButton.addEventListener(
 // =====================================================
 
 firebaseAuth.onAuthStateChanged(
-    function (user) {
+    async function (user) {
 
         if (user) {
 
@@ -2337,12 +2337,29 @@ firebaseAuth.onAuthStateChanged(
                 user.email
             );
 
+
             if (loginScreen) {
 
                 loginScreen.style.display =
                     "none";
 
             }
+
+
+            // ==================================================
+            // AMBIL DATA DARI FIRESTORE
+            // ==================================================
+
+            if (
+                typeof window.syncProfilesFromCloud ===
+                "function"
+            ) {
+
+                await window
+                    .syncProfilesFromCloud(user);
+
+            }
+
 
         } else {
 

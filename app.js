@@ -183,7 +183,17 @@ let profiles =
 let currentProfileKey =
     "ALTUS-BRI";
 
-    // ======================================================
+
+// ======================================================
+// FIRESTORE CLOUD SYNC
+// ======================================================
+
+let cloudReady = false;
+
+let cloudSyncInProgress = false;
+
+
+// ======================================================
 // BULAN AKTIF
 // ======================================================
 
@@ -637,6 +647,10 @@ function getTotalSpent() {
 
 function saveProfiles() {
 
+    // ==================================================
+    // SIMPAN KE LOCAL STORAGE
+    // ==================================================
+
     localStorage.setItem(
         "altus_bri_profiles",
         JSON.stringify(profiles)
@@ -654,7 +668,290 @@ function saveProfiles() {
         currentMonthKey
     );
 
+
+    // ==================================================
+    // SIMPAN KE FIRESTORE
+    // ==================================================
+
+    if (
+        cloudReady &&
+        typeof firebaseAuth !== "undefined" &&
+        firebaseAuth.currentUser &&
+        typeof firebaseDB !== "undefined"
+    ) {
+
+        saveProfilesToCloud();
+
+    }
+
 }
+
+// ======================================================
+// SIMPAN DATA KE FIRESTORE
+// ======================================================
+
+async function saveProfilesToCloud() {
+
+    if (
+        !cloudReady ||
+        typeof firebaseAuth === "undefined" ||
+        !firebaseAuth.currentUser ||
+        typeof firebaseDB === "undefined"
+    ) {
+
+        return;
+
+    }
+
+
+    if (cloudSyncInProgress) {
+
+        return;
+
+    }
+
+
+    cloudSyncInProgress = true;
+
+
+    try {
+
+        const user =
+            firebaseAuth.currentUser;
+
+
+        const userRef =
+            firebaseDB
+                .collection("users")
+                .doc(user.uid);
+
+
+        await userRef.set({
+
+            profiles:
+                JSON.parse(
+                    JSON.stringify(profiles)
+                ),
+
+            currentProfileKey:
+                currentProfileKey,
+
+            currentMonthKey:
+                currentMonthKey,
+
+            updatedAt:
+                firebase.firestore
+                    .FieldValue
+                    .serverTimestamp()
+
+        });
+
+
+        console.log(
+            "☁️ Data berhasil disimpan ke Firestore."
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "❌ Gagal menyimpan ke Firestore:",
+            error
+        );
+
+
+    } finally {
+
+        cloudSyncInProgress = false;
+
+    }
+
+}
+
+
+// ======================================================
+// AMBIL DATA DARI FIRESTORE
+// ======================================================
+
+async function syncProfilesFromCloud(user) {
+
+    if (
+        !user ||
+        typeof firebaseDB === "undefined"
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        console.log(
+            "☁️ Mengambil data dari Firestore..."
+        );
+
+
+        const userRef =
+            firebaseDB
+                .collection("users")
+                .doc(user.uid);
+
+
+        const snapshot =
+            await userRef.get();
+
+
+        // ==================================================
+        // DATA CLOUD SUDAH ADA
+        // ==================================================
+
+        if (snapshot.exists) {
+
+            const cloudData =
+                snapshot.data();
+
+
+            if (
+                cloudData.profiles
+            ) {
+
+                profiles =
+                    cloudData.profiles;
+
+            }
+
+
+            if (
+                cloudData.currentProfileKey &&
+                profiles[
+                    cloudData.currentProfileKey
+                ]
+            ) {
+
+                currentProfileKey =
+                    cloudData.currentProfileKey;
+
+            }
+
+
+            if (
+                cloudData.currentMonthKey &&
+                isValidMonthKey(
+                    cloudData.currentMonthKey
+                )
+            ) {
+
+                currentMonthKey =
+                    cloudData.currentMonthKey;
+
+            }
+
+
+            // ==================================================
+            // SIMPAN CACHE LOKAL
+            // ==================================================
+
+            localStorage.setItem(
+                "altus_bri_profiles",
+                JSON.stringify(profiles)
+            );
+
+
+            localStorage.setItem(
+                "altus_current_profile",
+                currentProfileKey
+            );
+
+
+            localStorage.setItem(
+                "altus_bri_current_month",
+                currentMonthKey
+            );
+
+
+            console.log(
+                "☁️ Data cloud berhasil dimuat."
+            );
+
+        }
+
+
+        // ==================================================
+        // BELUM ADA DATA CLOUD
+        // ==================================================
+
+        else {
+
+            console.log(
+                "☁️ Belum ada data cloud."
+            );
+
+            console.log(
+                "☁️ Data lokal akan digunakan sebagai data awal."
+            );
+
+        }
+
+
+        // ==================================================
+        // CLOUD SUDAH SIAP
+        // ==================================================
+
+        cloudReady = true;
+
+
+        // ==================================================
+        // JIKA DOKUMEN BARU → UPLOAD DATA LOKAL
+        // ==================================================
+
+        if (!snapshot.exists) {
+
+            await saveProfilesToCloud();
+
+        }
+
+
+        // ==================================================
+        // REFRESH TAMPILAN
+        // ==================================================
+
+        updateProfileHeader();
+
+        renderExpenseCards();
+
+        updateDashboard();
+
+
+        console.log(
+            "☁️ CLOUD SYNC AKTIF"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "❌ Gagal mengambil data Firestore:",
+            error
+        );
+
+
+        // Jangan membuat aplikasi rusak
+        // jika internet / Firestore bermasalah.
+
+        cloudReady = false;
+
+    }
+
+}
+
+
+// ======================================================
+// EKSPOS FUNGSI UNTUK INDEX.HTML
+// ======================================================
+
+window.syncProfilesFromCloud =
+    syncProfilesFromCloud;
 
 
 // ======================================================

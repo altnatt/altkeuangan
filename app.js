@@ -9001,38 +9001,51 @@ function addProfileStyles() {
 
         @media (max-width: 600px) {
 
-            .top-row {
-                gap: 12px;
-            }
+    .top-row {
+        gap: 10px;
+        grid-template-columns: minmax(0, 1fr) 190px;
+    }
 
-            .account {
-                gap: 11px;
-            }
+    .account {
+        gap: 9px;
+        min-width: 0;
+    }
 
-            .avatar {
-                width: 58px;
-                height: 58px;
-                flex: 0 0 58px;
-            }
+    .avatar {
+        width: 54px !important;
+        height: 54px !important;
+        min-width: 54px !important;
+        min-height: 54px !important;
+        max-width: 54px !important;
+        max-height: 54px !important;
+        flex: 0 0 54px !important;
+    }
 
-            .account-info {
-                min-width: 95px;
-            }
+    .account-info {
+        min-width: 0;
+    }
 
-            .account-name-text {
-                font-size: 22px;
-            }
+    .account-name-text {
+        font-size: 20px;
+    }
 
-            .bank-name {
-                font-size: 19px;
-            }
+    .bank-name {
+        font-size: 16px;
+    }
 
-            .month-selector {
-                width: 292px;
-                height: 76px;
-            }
+    .month-selector {
+        width: 190px !important;
+        min-width: 190px !important;
+        height: 58px !important;
+        padding: 0 10px;
+        gap: 7px;
+    }
 
-        }
+    .month-selector > span:not(.month-arrow) {
+        font-size: 14px;
+    }
+
+}
 
     `;
 

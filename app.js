@@ -13046,5 +13046,5 @@ function addNewAppDesign() {
     );
 
 }
-
+window.addNewAppDesign = addNewAppDesign;
 })();

@@ -1793,6 +1793,154 @@
     font-weight: 400;
     color: var(--muted);
 }
+
+/* =====================================================
+   FIREBASE LOGIN
+===================================================== */
+
+.login-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #e8f0f6 0%,
+            #f3f7fa 55%,
+            #edf3f7 100%
+        );
+}
+
+.login-box {
+    width: 100%;
+    max-width: 380px;
+
+    padding: 30px 24px 26px;
+
+    border-radius: 24px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 18px 50px
+        rgba(25,55,80,.14);
+}
+
+.login-title {
+    text-align: center;
+
+    color: #005658;
+
+    font-size: 26px;
+    font-weight: 800;
+
+    margin-bottom: 6px;
+}
+
+.login-subtitle {
+    text-align: center;
+
+    color: #6c8297;
+
+    font-size: 13px;
+    line-height: 1.4;
+
+    margin-bottom: 24px;
+}
+
+.login-label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #0d2d4f;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.login-input {
+    width: 100%;
+
+    height: 48px;
+
+    padding: 0 14px;
+
+    margin-bottom: 15px;
+
+    border: 1px solid #dce6ec;
+    border-radius: 12px;
+
+    outline: none;
+
+    background: #f9fbfc;
+
+    color: #0d2d4f;
+
+    font-size: 14px;
+}
+
+.login-input:focus {
+    border-color: #005658;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(0,86,88,.08);
+}
+
+.login-button {
+    width: 100%;
+
+    height: 48px;
+
+    margin-top: 5px;
+
+    border: 0;
+    border-radius: 12px;
+
+    background: #005658;
+
+    color: #ffffff;
+
+    font-size: 15px;
+    font-weight: 750;
+
+    cursor: pointer;
+}
+
+.login-button:active {
+    transform: scale(.985);
+}
+
+.login-error {
+    display: none;
+
+    margin-top: 13px;
+
+    padding: 10px 12px;
+
+    border-radius: 10px;
+
+    background: #fff0f1;
+
+    color: #c73d49;
+
+    font-size: 12px;
+
+    line-height: 1.4;
+
+    text-align: center;
+}
+
     </style>
 
 </head>
@@ -1800,6 +1948,62 @@
 
 <body>
 
+    <!-- =====================================================
+     FIREBASE LOGIN
+===================================================== -->
+
+<div id="loginScreen" class="login-screen">
+
+    <div class="login-box">
+
+        <div class="login-title">
+            ALTUS – BRI
+        </div>
+
+        <div class="login-subtitle">
+            Masuk untuk mengakses data keuangan pribadi
+        </div>
+
+        <label class="login-label">
+            Email
+        </label>
+
+        <input
+            id="loginEmail"
+            class="login-input"
+            type="email"
+            placeholder="Email"
+            autocomplete="username"
+        >
+
+        <label class="login-label">
+            Password
+        </label>
+
+        <input
+            id="loginPassword"
+            class="login-input"
+            type="password"
+            placeholder="Password"
+            autocomplete="current-password"
+        >
+
+        <button
+            id="loginButton"
+            class="login-button"
+            type="button"
+        >
+            Masuk
+        </button>
+
+        <div
+            id="loginError"
+            class="login-error"
+        ></div>
+
+    </div>
+
+</div>
 
 <div class="app">
 
@@ -2019,6 +2223,141 @@
 
     const firebaseAuth = firebase.auth();
     const firebaseDB = firebase.firestore();
+    // =====================================================
+// FIREBASE LOGIN
+// =====================================================
+
+const loginScreen =
+    document.getElementById("loginScreen");
+
+const loginEmail =
+    document.getElementById("loginEmail");
+
+const loginPassword =
+    document.getElementById("loginPassword");
+
+const loginButton =
+    document.getElementById("loginButton");
+
+const loginError =
+    document.getElementById("loginError");
+
+
+function showLoginError(message) {
+
+    if (!loginError) {
+        return;
+    }
+
+    loginError.textContent = message;
+
+    loginError.style.display = "block";
+}
+
+
+function hideLoginError() {
+
+    if (!loginError) {
+        return;
+    }
+
+    loginError.textContent = "";
+
+    loginError.style.display = "none";
+}
+
+
+loginButton.addEventListener(
+    "click",
+    async function () {
+
+        hideLoginError();
+
+        const email =
+            loginEmail.value.trim();
+
+        const password =
+            loginPassword.value;
+
+        if (!email || !password) {
+
+            showLoginError(
+                "Email dan password wajib diisi."
+            );
+
+            return;
+        }
+
+        loginButton.disabled = true;
+
+        loginButton.textContent =
+            "Memproses...";
+
+        try {
+
+            await firebaseAuth
+                .signInWithEmailAndPassword(
+                    email,
+                    password
+                );
+
+        } catch (error) {
+
+            console.error(
+                "Login Firebase gagal:",
+                error
+            );
+
+            showLoginError(
+                "Email atau password salah."
+            );
+
+            loginButton.disabled = false;
+
+            loginButton.textContent =
+                "Masuk";
+
+        }
+
+    }
+);
+
+
+// =====================================================
+// CEK STATUS LOGIN
+// =====================================================
+
+firebaseAuth.onAuthStateChanged(
+    function (user) {
+
+        if (user) {
+
+            console.log(
+                "Login berhasil:",
+                user.email
+            );
+
+            if (loginScreen) {
+
+                loginScreen.style.display =
+                    "none";
+
+            }
+
+        } else {
+
+            if (loginScreen) {
+
+                loginScreen.style.display =
+                    "flex";
+
+            }
+
+        }
+
+    }
+);
+
 </script>
 
 <script src="app.js"></script>

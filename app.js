@@ -2102,6 +2102,49 @@ function createExpenseCard(
 // RENDER KARTU
 // ======================================================
 
+// ======================================================
+// URUTAN KOMPONEN PENGELUARAN
+// ======================================================
+
+function getOrderedExpenseNames(expenses) {
+
+    const defaultExpenses =
+        DEFAULT_PROFILES[
+            currentProfileKey
+        ]?.expenses || {};
+
+
+    const orderedNames =
+        Object.keys(defaultExpenses)
+            .filter(name =>
+                Object.prototype.hasOwnProperty.call(
+                    expenses,
+                    name
+                )
+            );
+
+
+    // Kalau ada komponen baru yang belum ada
+    // di DEFAULT_PROFILES, tetap tampilkan
+    // di bagian paling bawah.
+
+    Object.keys(expenses)
+        .forEach(name => {
+
+            if (
+                !orderedNames.includes(name)
+            ) {
+
+                orderedNames.push(name);
+
+            }
+
+        });
+
+
+    return orderedNames;
+}
+
 function renderExpenseCards() {
 
     const container =
@@ -2124,7 +2167,7 @@ function renderExpenseCards() {
     let html = "";
 
 
-    Object.keys(expenses)
+    getOrderedExpenseNames(expenses)
         .forEach(name => {
 
             html +=
@@ -7809,7 +7852,7 @@ function openBudgetSettings() {
     let rows = "";
 
 
-    Object.keys(expenses)
+    getOrderedExpenseNames(expenses)
         .forEach(name => {
 
             const item =
